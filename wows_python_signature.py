@@ -4,7 +4,7 @@ import re
 
 renamed_functions = set([])
 called_regex = re.compile(r'([^\s]+)[,:] (not|unexpectedly )?called', flags=re.I)
-fn_name_log_prefix_regex = re.compile(r'(([^\s]+::)+([^s]+)): ', flags=re.I)
+fn_name_log_prefix_regex = re.compile(r'(([^\s]+::)+([^\s]+)):? ', flags=re.I)
 
 for string in current_view.strings:
 	possible_fn_name = None
