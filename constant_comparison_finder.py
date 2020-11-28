@@ -11,7 +11,7 @@ def match_comparison_against_const(insn):
 
 functions = current_view.functions
 found_consts = {}
-consts_to_find = [0x2E, 0x2F, 0x2B]
+consts_to_find = [0x2E, 0x2F, 0x2B, 0x13, 0x16, 0x18, 0x20]
 while functions:
 	function = functions.pop()
 	if function is None:
@@ -25,9 +25,6 @@ while functions:
 					if function not in found_consts:
 						found_consts[function] = []
 					found_consts[function].append((insn.address, constant))
-					break
-	if len(found_consts) > 0:
-		break
 
 
 for function, consts in found_consts.items():
