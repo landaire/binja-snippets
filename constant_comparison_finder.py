@@ -34,7 +34,7 @@ for function, consts in found_consts.items():
 	found_matches_unique = list(set(map(lambda const_data: hex(const_data[1]), consts)))
 	found_matches_unique.sort()
 	joined_matches = ", ".join(found_matches_unique)
-	print("{}: {}".format(function.name), joined_matches)
+	print("{}: {}".format(function.name, joined_matches))
 	for const_data in consts:
 		address, constant_value = const_data
 		print("    {}: {}".format(hex(address), hex(constant_value)))
