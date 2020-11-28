@@ -1,13 +1,23 @@
 #
 #
 def match_comparison_against_const(insn):
-	if insn.operation != LowLevelILOperation.LLIL_IF:
+	if insn.operation != HighLevelILOperation.HLIL_IF:
 		return False
-	if insn.condition.operation != LowLevelILOperation.LLIL_CMP_NE and insn.condition.operation != LowLevelILOperation.LLIL_CMP_E:
+	if insn.condition.operation != HighLevelILOperation.HLIL_CMP_NE and insn.condition.operation != HighLevelILOperation.HLIL_CMP_E:
 		return False
-	if insn.condition.right.operation != LowLevelILOperation.LLIL_CONST:
+	if insn.condition.right.operation != HighLevelILOperation.HLIL_CONST:
 		return False
 	return True
+
+def match_case_against_const(insn):
+	if insn.operation != HighLevelILOperation.HLIL_CASE:
+		return False
+
+	for value in insn.values:
+		if value.operation == HighLevelILOperation.HLIL_CONST:
+			return True
+
+	return False
 
 functions = current_view.functions
 found_consts = {}
@@ -17,7 +27,7 @@ while functions:
 	if function is None:
 		continue
 
-	for block in function.llil:
+	for block in function.hlil:
 		for insn in block:
 			if match_comparison_against_const(insn):
 				constant = insn.condition.right.constant
@@ -25,6 +35,14 @@ while functions:
 					if function not in found_consts:
 						found_consts[function] = []
 					found_consts[function].append((insn.address, constant))
+			elif match_case_against_const(insn):
+				for value in insn.values:
+					if value.operation == HighLevelILOperation.HLIL_CONST:
+						constant = value.constant
+						if constant in consts_to_find:
+							if function not in found_consts:
+								found_consts[function] = []
+							found_consts[function].append((insn.address, constant))				
 
 
 sorted_results = []
