@@ -21,7 +21,7 @@ def match_case_against_const(insn):
 
 functions = current_view.functions
 found_consts = {}
-consts_to_find = [0x2E, 0x2F, 0x2B, 0x13, 0x16, 0x18, 0x20]
+consts_to_find = [0xE] #[0x2E, 0x2F, 0x2B, 0x13, 0x16, 0x18, 0x20]
 while functions:
 	function = functions.pop()
 	if function is None:
@@ -34,7 +34,7 @@ while functions:
 				if constant in consts_to_find:
 					if function not in found_consts:
 						found_consts[function] = []
-					found_consts[function].append((insn.address, constant))
+					found_consts[function].append((insn.address, constant, 'cmp'))
 			elif match_case_against_const(insn):
 				for value in insn.values:
 					if value.operation == HighLevelILOperation.HLIL_CONST:
@@ -42,7 +42,7 @@ while functions:
 						if constant in consts_to_find:
 							if function not in found_consts:
 								found_consts[function] = []
-							found_consts[function].append((insn.address, constant))				
+							found_consts[function].append((insn.address, constant, 'case'))				
 
 
 sorted_results = []
@@ -59,5 +59,5 @@ for res in sorted_results:
 	joined_matches = ", ".join(found_matches_unique)
 	print("{}: {}".format(function.name, joined_matches))
 	for const_data in consts:
-		address, constant_value = const_data
-		print("    {}: {}".format(hex(address), hex(constant_value)))
+		address, constant_value, result_type = const_data
+		print("    {}: {} ({})".format(hex(address), hex(constant_value), result_type))
